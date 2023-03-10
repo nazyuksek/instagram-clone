@@ -1,41 +1,111 @@
-import React, { useEffect, useState } from "react";
-import { Image, ImageSourcePropType, Text, View } from "react-native";
-import PhotosResponse from "../../models/photosResponse";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  getPhotos,
-  getPhotographerProfilePictureUrl,
-} from "../../services/PexelService";
+  Animated,
+  Dimensions,
+  FlatList,
+  Image,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
+import PhotosResponse from "../../models/photosResponse";
 import { styles } from "./SinglePost.style";
-import { LazyloadView } from "react-native-lazyload";
+import { FontAwesome } from "@expo/vector-icons";
+import { scale } from "react-native-size-matters";
+import { Entypo } from "@expo/vector-icons";
+import { ScalingDot } from "react-native-animated-pagination-dots";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface SinglePostProps {
   image: string;
   username: string;
   caption: string;
-  photographerId: number;
+  isLiked: boolean;
 }
 
-function SinglePost({
-  image,
-  username,
-  caption,
-  photographerId,
-}: SinglePostProps) {
-  useEffect(() => {
-    const fetchData = async () => {
-      await getPhotographerProfilePictureUrl(photographerId).then((res) => {
-        //console.log(photographerId);
-      });
-    };
-    fetchData();
-  }, []);
+function SinglePost({ image, username, caption, isLiked }: SinglePostProps) {
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const [postLiked, setPostLiked] = useState<boolean>(isLiked);
+  const [screenWidth, setScreenWidth] = useState<number>(
+    Dimensions.get("window").width
+  );
+
+  function togglePostLiked() {
+    setPostLiked(!postLiked);
+  }
 
   return (
     <View style={styles.post}>
-      <View style={styles.info}>
+      <View style={styles.userInfo}>
         <Text style={styles.username}>{username}</Text>
+        <Entypo name="dots-three-horizontal" size={16} color="black" />
       </View>
-      <Image source={{ uri: image }} style={styles.image} />
+      {/* <Image source={{ uri: image }} style={styles.image} /> */}
+      <FlatList
+        style={{ width: "100%" }}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        pagingEnabled
+        bounces={false}
+        data={[image, image]}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          {
+            useNativeDriver: false,
+          }
+        )}
+        renderItem={({ item }: any) => (
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: item }}
+              style={[styles.image, { width: screenWidth }]}
+            />
+          </View>
+        )}
+        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+      />
+      <View style={styles.icons}>
+        <View style={styles.iconsLeft}>
+          {postLiked ? (
+            <Pressable onPress={togglePostLiked}>
+              <FontAwesome name="heart" size={24} color="black" />
+            </Pressable>
+          ) : (
+            <Pressable onPress={togglePostLiked}>
+              <FontAwesome name="heart-o" size={24} color="black" />
+            </Pressable>
+          )}
+          <FontAwesome
+            name="comment-o"
+            size={24}
+            color="black"
+            style={{ marginLeft: scale(16) }}
+          />
+          <FontAwesome
+            name="share"
+            size={24}
+            color="black"
+            style={{ marginLeft: scale(16) }}
+          />
+        </View>
+        <ScalingDot
+          data={[image, image]}
+          scrollX={scrollX}
+          inActiveDotOpacity={0.6}
+          dotStyle={{
+            width: 4,
+            height: 4,
+            backgroundColor: "#125688",
+            borderRadius: 5,
+            marginRight: 0,
+          }}
+          containerStyle={{
+            left: "50%",
+            top: "85%",
+          }}
+        />
+        <FontAwesome name="bookmark-o" size={24} color="black" />
+      </View>
       <View style={styles.info}>
         <Text style={styles.username}>{username}</Text>
         <Text style={styles.caption}>{caption}</Text>

@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { scale, verticalScale } from "react-native-size-matters";
 
 export const styles = StyleSheet.create({
   post: {
@@ -6,23 +7,43 @@ export const styles = StyleSheet.create({
     width: "100%",
   },
   imageContainer: {
-    height: "85%",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   image: {
-    width: "100%",
     flex: 1,
+    resizeMode: "cover",
+  },
+  userInfo: {
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(4),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   info: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(4),
     flexDirection: "row",
   },
+
   username: {
     fontWeight: "700",
-    marginRight: 4,
+    marginRight: verticalScale(4),
   },
   caption: {
     fontWeight: "300",
-    maxWidth: "75%",
+    maxWidth: "70%",
+  },
+  icons: {
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(8),
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+  },
+  iconsLeft: {
+    flexDirection: "row",
   },
 });
