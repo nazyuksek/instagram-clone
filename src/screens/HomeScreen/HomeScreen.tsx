@@ -1,35 +1,36 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
-  Dimensions,
   FlatList,
   SafeAreaView,
   Text,
   View,
+  ViewToken,
 } from "react-native";
 import SinglePost from "../../components/SinglePost/SinglePost";
-import { PhotosWithTotalResults, ErrorResponse, Photo } from "pexels";
 import { styles } from "./HomeScreen.style";
 import { AntDesign } from "@expo/vector-icons";
-import { getPhotos } from "../../services/pexelService";
+import { getFeed } from "../../services/pexelService";
 import Header from "../../components/Header/Header";
 import { verticalScale } from "react-native-size-matters";
+import FeedItem from "../../models/feedObjects";
 
 interface HomeScreenProps {}
 
 function HomeScreen({}: HomeScreenProps) {
-  const [photos, setPhotos] = useState<Photo[]>();
+  const [items, setItems] = useState<FeedItem[]>();
   const scrollX = useRef(new Animated.Value(0)).current;
   const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
+  const [shouldAutoplay, setShouldAutoplay] = useState<number[]>([]);
 
   const fetchData = async () => {
+    const response = await getFeed(page);
     setLoading(true);
-    const response = await getPhotos();
-    if (photos !== undefined) {
-      setPhotos([...photos, ...response.photos]);
+    if (items !== undefined) {
+      setItems([...items, ...response]);
     } else {
-      [setPhotos(response.photos)];
+      setItems(response);
     }
     setLoading(false);
   };
@@ -44,6 +45,15 @@ function HomeScreen({}: HomeScreenProps) {
     }
   };
 
+  const onViewableItemsChanged = useCallback(
+    (info: { viewableItems: ViewToken[]; changed: ViewToken[] }): void => {
+      const visibleItems = info.viewableItems.map(
+        (entry, index) => entry.item.id
+      );
+      setShouldAutoplay(visibleItems);
+    },
+    []
+  );
   return (
     <SafeAreaView style={styles.listContainer}>
       <Header />
@@ -51,7 +61,8 @@ function HomeScreen({}: HomeScreenProps) {
         style={styles.postsList}
         showsHorizontalScrollIndicator={false}
         bounces={false}
-        data={photos}
+        data={items}
+        onViewableItemsChanged={onViewableItemsChanged}
         keyExtractor={(item, index) => index.toString()}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -67,16 +78,17 @@ function HomeScreen({}: HomeScreenProps) {
             ]}
           >
             <SinglePost
-              image={item.src.medium}
-              username={item.photographer}
-              caption={item.alt}
+              type={item.type}
+              items={item.items}
+              username={item.user}
+              caption={item.description}
               isLiked={item.liked}
+              shouldPlay={shouldAutoplay.includes(item.id)}
             />
           </View>
         )}
         onEndReached={handleEndReached}
         onEndReachedThreshold={1}
-        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
       />
       {loading && (
         <View style={styles.loading}>

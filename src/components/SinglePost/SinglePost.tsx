@@ -14,21 +14,31 @@ import { FontAwesome } from "@expo/vector-icons";
 import { scale } from "react-native-size-matters";
 import { Entypo } from "@expo/vector-icons";
 import { ScalingDot } from "react-native-animated-pagination-dots";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Video, AVPlaybackStatus } from "expo-av";
 
 interface SinglePostProps {
-  image: string;
+  items: string[];
   username: string;
   caption: string;
   isLiked: boolean;
+  type: string;
+  shouldPlay: boolean;
 }
 
-function SinglePost({ image, username, caption, isLiked }: SinglePostProps) {
+function SinglePost({
+  items,
+  username,
+  caption,
+  isLiked,
+  type,
+  shouldPlay,
+}: SinglePostProps) {
   const scrollX = useRef(new Animated.Value(0)).current;
   const [postLiked, setPostLiked] = useState<boolean>(isLiked);
   const [screenWidth, setScreenWidth] = useState<number>(
     Dimensions.get("window").width
   );
+  const videoRef = useRef<Video>(null);
 
   function togglePostLiked() {
     setPostLiked(!postLiked);
@@ -40,30 +50,39 @@ function SinglePost({ image, username, caption, isLiked }: SinglePostProps) {
         <Text style={styles.username}>{username}</Text>
         <Entypo name="dots-three-horizontal" size={16} color="black" />
       </View>
-      {/* <Image source={{ uri: image }} style={styles.image} /> */}
-      <FlatList
-        style={{ width: "100%" }}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        pagingEnabled
-        bounces={false}
-        data={[image, image]}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          {
-            useNativeDriver: false,
-          }
-        )}
-        renderItem={({ item }: any) => (
-          <View style={styles.imageContainer}>
-            <Image
-              source={{ uri: item }}
-              style={[styles.image, { width: screenWidth }]}
-            />
-          </View>
-        )}
-        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
-      />
+      {type === "video" ? (
+        <Video
+          source={{ uri: items[0] }}
+          style={[styles.image, { width: screenWidth }]}
+          shouldPlay={shouldPlay}
+          ref={videoRef}
+          isLooping
+        />
+      ) : (
+        <FlatList
+          style={{ width: "100%" }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          bounces={false}
+          data={items}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            {
+              useNativeDriver: false,
+            }
+          )}
+          renderItem={({ item }: any) => (
+            <View style={styles.imageContainer}>
+              <Image
+                source={{ uri: item }}
+                style={[styles.image, { width: screenWidth }]}
+              />
+            </View>
+          )}
+          viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+        />
+      )}
       <View style={styles.icons}>
         <View style={styles.iconsLeft}>
           {postLiked ? (
@@ -88,22 +107,24 @@ function SinglePost({ image, username, caption, isLiked }: SinglePostProps) {
             style={{ marginLeft: scale(16) }}
           />
         </View>
-        <ScalingDot
-          data={[image, image]}
-          scrollX={scrollX}
-          inActiveDotOpacity={0.6}
-          dotStyle={{
-            width: 4,
-            height: 4,
-            backgroundColor: "#125688",
-            borderRadius: 5,
-            marginRight: 0,
-          }}
-          containerStyle={{
-            left: "50%",
-            top: "85%",
-          }}
-        />
+        {type === "photo" && (
+          <ScalingDot
+            data={items}
+            scrollX={scrollX}
+            inActiveDotOpacity={0.6}
+            dotStyle={{
+              width: 4,
+              height: 4,
+              backgroundColor: "#125688",
+              borderRadius: 5,
+              marginRight: 0,
+            }}
+            containerStyle={{
+              left: "50%",
+              top: "85%",
+            }}
+          />
+        )}
         <FontAwesome name="bookmark-o" size={24} color="black" />
       </View>
       <View style={styles.info}>
