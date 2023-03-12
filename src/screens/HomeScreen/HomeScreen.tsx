@@ -14,6 +14,8 @@ import { getFeed } from "../../services/pexelService";
 import Header from "../../components/Header/Header";
 import { verticalScale } from "react-native-size-matters";
 import FeedItem from "../../models/feedObjects";
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigationProp } from "../../navigation/AppNavigation";
 
 interface HomeScreenProps {}
 
@@ -23,9 +25,10 @@ function HomeScreen({}: HomeScreenProps) {
   const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [shouldAutoplay, setShouldAutoplay] = useState<number[]>([]);
+  const navigation = useNavigation<AppNavigationProp>();
 
   const fetchData = async () => {
-    const response = await getFeed(page);
+    const response = await getFeed(page, "People");
     setLoading(true);
     if (items !== undefined) {
       setItems([...items, ...response]);
@@ -56,7 +59,7 @@ function HomeScreen({}: HomeScreenProps) {
   );
   return (
     <SafeAreaView style={styles.listContainer}>
-      <Header />
+      <Header navigation={navigation} redirectionScreen="GridScreen" />
       <FlatList
         style={styles.postsList}
         showsHorizontalScrollIndicator={false}

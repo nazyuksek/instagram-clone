@@ -2,16 +2,15 @@ import React from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { styles } from "./Header.style";
 import { Feather } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { AppNavigationProp } from "../../navigation/AppNavigation";
 
-interface HeaderProps {}
+interface HeaderProps {
+  navigation: any;
+  redirectionScreen: string;
+}
 
-function Header({}: HeaderProps) {
-  const navigation = useNavigation<AppNavigationProp>();
-
+function Header({ navigation, redirectionScreen }: HeaderProps) {
   function handleSearchPressed() {
-    navigation.navigate("GridScreen");
+    navigation.navigate(redirectionScreen);
   }
   return (
     <View style={styles.header}>

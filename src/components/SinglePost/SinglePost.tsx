@@ -4,6 +4,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  PixelRatio,
   Pressable,
   Text,
   View,
@@ -14,7 +15,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { scale } from "react-native-size-matters";
 import { Entypo } from "@expo/vector-icons";
 import { ScalingDot } from "react-native-animated-pagination-dots";
-import { Video, AVPlaybackStatus } from "expo-av";
+import { Video } from "expo-av";
 
 interface SinglePostProps {
   items: string[];
@@ -35,10 +36,7 @@ function SinglePost({
 }: SinglePostProps) {
   const scrollX = useRef(new Animated.Value(0)).current;
   const [postLiked, setPostLiked] = useState<boolean>(isLiked);
-  const [screenWidth, setScreenWidth] = useState<number>(
-    Dimensions.get("window").width
-  );
-  const videoRef = useRef<Video>(null);
+  const screenWidth = Dimensions.get("window").width;
 
   function togglePostLiked() {
     setPostLiked(!postLiked);
@@ -55,7 +53,6 @@ function SinglePost({
           source={{ uri: items[0] }}
           style={[styles.image, { width: screenWidth }]}
           shouldPlay={shouldPlay}
-          ref={videoRef}
           isLooping
         />
       ) : (

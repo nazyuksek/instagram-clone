@@ -12,30 +12,32 @@ const client = createClient(
   "qOje6Xh0aICA96FPeH1qRqPnMuDHhp3cPrIgRYoZ66HEETYFC5hCQHRS"
 );
 
-//5 videos, 10 photos
-const query = "People";
-const feedItems = 5;
+// const query = "People";
+const feedItems = 10;
 
-export async function getPhotos(): Promise<PhotosWithTotalResults> {
-  return client.photos.search({
-    query,
-    page: 1,
-    per_page: 10,
-  }) as unknown as PhotosWithTotalResults;
-}
+// export async function getPhotos(): Promise<PhotosWithTotalResults> {
+//   return client.photos.search({
+//     query,
+//     page: 1,
+//     per_page: 35,
+//   }) as unknown as PhotosWithTotalResults;
+// }
 
-export async function getFeed(page: number): Promise<FeedItem[]> {
+export async function getFeed(
+  page: number,
+  query: string
+): Promise<FeedItem[]> {
   var feed: FeedItem[] = [];
   var photos: Photo[] = (
     (await client.photos.search({
-      query,
+      query: query,
       page: page,
       per_page: feedItems * 2,
     })) as unknown as PhotosWithTotalResults
   ).photos;
   const videos = (
     (await client.videos.search({
-      query,
+      query: query,
       page: page,
       per_page: feedItems,
     })) as unknown as Videos
@@ -49,7 +51,7 @@ export async function getFeed(page: number): Promise<FeedItem[]> {
           type: "photo",
           user: p1.photographer,
           description: [p1.alt!, p2.alt!],
-          items: [p1.src.medium, p2.src.medium],
+          items: [p1.src.small, p2.src.small],
           liked: p1.liked,
           id: p1.id,
         });
