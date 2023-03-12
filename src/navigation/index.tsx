@@ -1,9 +1,10 @@
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useEffect } from "react";
 import AuthNavigation from "./AuthNavigation";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AppNavigation from "./AppNavigation";
+import useAuthentication from "../hooks/useAuthentication";
 
 export type RootStackParamList = {
   Application: undefined;
@@ -21,12 +22,16 @@ export default function Navigation() {
     },
   };
   const Stack = createNativeStackNavigator<RootStackParamList>();
+  const { isLoggedIn } = useAuthentication();
 
   return (
     <NavigationContainer theme={MyTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Application" component={AppNavigation} />
-        {/* <Stack.Screen name="Authentication" component={AuthNavigation} /> */}
+        {isLoggedIn ? (
+          <Stack.Screen name="Application" component={AppNavigation} />
+        ) : (
+          <Stack.Screen name="Authentication" component={AuthNavigation} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

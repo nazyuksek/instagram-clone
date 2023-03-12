@@ -28,7 +28,7 @@ function HomeScreen({}: HomeScreenProps) {
   const navigation = useNavigation<AppNavigationProp>();
 
   const fetchData = async () => {
-    const response = await getFeed(page, "People");
+    const response = await getFeed(page, "People", 10);
     setLoading(true);
     if (items !== undefined) {
       setItems([...items, ...response]);

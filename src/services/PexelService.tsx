@@ -13,7 +13,7 @@ const client = createClient(
 );
 
 // const query = "People";
-const feedItems = 10;
+const feedItems = 8;
 
 // export async function getPhotos(): Promise<PhotosWithTotalResults> {
 //   return client.photos.search({
@@ -25,21 +25,22 @@ const feedItems = 10;
 
 export async function getFeed(
   page: number,
-  query: string
+  query: string,
+  itemCount: number
 ): Promise<FeedItem[]> {
   var feed: FeedItem[] = [];
   var photos: Photo[] = (
     (await client.photos.search({
       query: query,
       page: page,
-      per_page: feedItems * 2,
+      per_page: itemCount * 2,
     })) as unknown as PhotosWithTotalResults
   ).photos;
   const videos = (
     (await client.videos.search({
       query: query,
       page: page,
-      per_page: feedItems,
+      per_page: itemCount,
     })) as unknown as Videos
   ).videos;
   while (photos.length + videos.length != 0) {
@@ -50,8 +51,8 @@ export async function getFeed(
         feed.push({
           type: "photo",
           user: p1.photographer,
-          description: [p1.alt!, p2.alt!],
-          items: [p1.src.small, p2.src.small],
+          description: [p1.alt!],
+          items: [p1.src.medium, p2.src.medium],
           liked: p1.liked,
           id: p1.id,
         });

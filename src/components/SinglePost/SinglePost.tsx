@@ -50,6 +50,7 @@ function SinglePost({
       </View>
       {type === "video" ? (
         <Video
+          resizeMode="cover"
           source={{ uri: items[0] }}
           style={[styles.image, { width: screenWidth }]}
           shouldPlay={shouldPlay}

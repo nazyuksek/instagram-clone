@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.9.11",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "expo": "~48.0.6",
@@ -16,6 +17,7 @@
     "expo-status-bar": "~1.4.4",
     "pexels": "^1.4.0",
     "react": "18.2.0",
+    "react-hook-form": "^7.43.5",
     "react-native": "0.71.3",
     "react-native-animated-pagination-dots": "^0.1.73",
     "react-native-elements": "^3.4.3",
@@ -27,7 +29,8 @@
     "react-native-svg": "13.4.0",
     "react-native-vector-icons": "^9.2.0",
     "react-native-video": "^5.2.1",
-    "react-native-video-player": "^0.14.0"
+    "react-native-video-player": "^0.14.0",
+    "yup": "^1.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

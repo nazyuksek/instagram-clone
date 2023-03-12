@@ -23,7 +23,7 @@ interface GridScreenProps {}
 
 function GridScreen({}: GridScreenProps) {
   const navigation = useNavigation<AppNavigationProp>();
-  const [searchText, setSearchText] = useState<string>("");
+  const [searchText, setSearchText] = useState<string>("People");
   const [page, setPage] = useState<number>(1);
   const [items, setItems] = useState<FeedItem[]>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,7 +40,7 @@ function GridScreen({}: GridScreenProps) {
   );
 
   const fetchData = async () => {
-    await getFeed(page, searchText)
+    await getFeed(page, searchText, 8)
       .then((res) => {
         setLoading(true);
         if (items !== undefined) {
@@ -63,20 +63,17 @@ function GridScreen({}: GridScreenProps) {
     }
   };
 
-  async function handleSubmit() {
-    await getFeed(page, searchText)
+  const handleSubmit = async () => {
+    await getFeed(page, searchText, 4)
       .then((res) => {
         setLoading(true);
-        if (items !== undefined) {
-          setItems(res);
-        } else {
-          setItems(res);
-        }
+        setItems(res);
       })
       .catch((error) => {
         setError(true);
       });
-  }
+    setLoading(false);
+  };
 
   return (
     <SafeAreaView style={styles.gridScreen}>
@@ -100,7 +97,7 @@ function GridScreen({}: GridScreenProps) {
         showsHorizontalScrollIndicator={false}
         bounces={false}
         data={items}
-        numColumns={4}
+        numColumns={3}
         key={0}
         onViewableItemsChanged={onViewableItemsChanged}
         keyExtractor={(item, index) => index.toString()}
@@ -122,11 +119,11 @@ function GridScreen({}: GridScreenProps) {
         onEndReached={handleEndReached}
         onEndReachedThreshold={1}
       />
-      {error && (
+      {/* {error && (
         <View style={{ marginTop: 60, backgroundColor: "red", height: 300 }}>
           <Text>No results found</Text>
         </View>
-      )}
+      )} */}
     </SafeAreaView>
   );
 }
