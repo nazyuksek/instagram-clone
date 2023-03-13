@@ -8,6 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useAuthentication from "../../hooks/useAuthentication";
 import * as SecureStore from "expo-secure-store";
+import bcrypt from "bcryptjs";
 import AuthModel from "../../models/authModel";
 
 interface LoginScreenProps {}
@@ -17,6 +18,7 @@ function LoginScreen({}: LoginScreenProps) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { setIsLoggedIn } = useAuthentication();
+  const saltRounds = "10";
 
   async function save(user: AuthModel) {
     await SecureStore.setItemAsync("email", user.email);
@@ -42,6 +44,14 @@ function LoginScreen({}: LoginScreenProps) {
   async function onSubmit(data: any) {
     if (!errors.email && !errors.password) {
       setIsLoggedIn(true);
+      bcrypt.hash(password, saltRounds, (err: string, hash: string) => {
+        if (err) {
+          console.log(err);
+        } else {
+          // Use the hash for storage
+          console.log(hash);
+        }
+      });
       setEmail(data.email);
       setPassword(data.password);
       await save({ email, password });
