@@ -12,8 +12,7 @@ const client = createClient(
   "qOje6Xh0aICA96FPeH1qRqPnMuDHhp3cPrIgRYoZ66HEETYFC5hCQHRS"
 );
 
-const feedItems = 8;
-
+// This function is for getting videos and photos in itemCount number, in a random order.
 export async function getFeed(
   page: number,
   query: string,
@@ -24,7 +23,7 @@ export async function getFeed(
     (await client.photos.search({
       query: query,
       page: page,
-      per_page: itemCount * 2,
+      per_page: itemCount,
     })) as unknown as PhotosWithTotalResults
   ).photos;
   const videos = (

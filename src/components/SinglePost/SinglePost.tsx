@@ -3,7 +3,6 @@ import {
   Animated,
   Dimensions,
   FlatList,
-  Image,
   PixelRatio,
   Pressable,
   Text,
@@ -16,6 +15,7 @@ import { scale } from "react-native-size-matters";
 import { Entypo } from "@expo/vector-icons";
 import { ScalingDot } from "react-native-animated-pagination-dots";
 import { Video } from "expo-av";
+import { Image } from "expo-image";
 
 interface SinglePostProps {
   items: string[];
@@ -73,8 +73,10 @@ function SinglePost({
           renderItem={({ item }: any) => (
             <View style={styles.imageContainer}>
               <Image
+                contentFit="contain"
                 source={{ uri: item }}
                 style={[styles.image, { width: screenWidth }]}
+                cachePolicy="memory"
               />
             </View>
           )}

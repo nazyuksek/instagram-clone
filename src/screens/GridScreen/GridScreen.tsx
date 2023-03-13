@@ -1,5 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackBar from "../../components/BackBar/BackBar";
 import { AppNavigationProp } from "../../navigation/AppNavigation";
@@ -16,6 +22,7 @@ import { getFeed } from "../../services/pexel";
 import FeedItem from "../../models/feedObjects";
 import GridComponent from "../../components/GridComponent/GridComponent";
 import { Feather } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 interface GridScreenProps {}
 
@@ -38,9 +45,9 @@ function GridScreen({}: GridScreenProps) {
   );
 
   const fetchData = async () => {
-    await getFeed(page, searchText, 8)
+    setLoading(true);
+    await getFeed(page, searchText, 12)
       .then((res) => {
-        setLoading(true);
         if (items !== undefined) {
           setItems([...items, ...res]);
         } else {
@@ -64,9 +71,9 @@ function GridScreen({}: GridScreenProps) {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     await getFeed(page, searchText, 4)
       .then((res) => {
-        setLoading(true);
         setItems(res);
       })
       .catch((error) => {
@@ -94,8 +101,8 @@ function GridScreen({}: GridScreenProps) {
       </View>
       {items?.length !== 0 ? (
         <FlatList
-          style={styles.postsList}
-          showsHorizontalScrollIndicator={false}
+          style={[styles.postsList, { height: !loading ? "100%" : "90%" }]}
+          showsVerticalScrollIndicator={false}
           bounces={false}
           data={items}
           numColumns={3}
@@ -108,14 +115,16 @@ function GridScreen({}: GridScreenProps) {
               useNativeDriver: false,
             }
           )}
-          renderItem={({ item }: any) => (
-            <View style={styles.postContainer}>
-              <GridComponent
-                type={item.type}
-                items={item.items}
-                shouldPlay={shouldAutoplay.includes(item.id)}
-              />
-            </View>
+          renderItem={({ item }) => (
+            <Suspense>
+              <View style={styles.postContainer}>
+                <GridComponent
+                  type={item.type}
+                  items={item.items}
+                  shouldPlay={shouldAutoplay.includes(item.id)}
+                />
+              </View>
+            </Suspense>
           )}
           onEndReached={handleEndReached}
           onEndReachedThreshold={1}
@@ -123,6 +132,11 @@ function GridScreen({}: GridScreenProps) {
       ) : (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>No results found</Text>
+        </View>
+      )}
+      {loading && (
+        <View style={styles.loading}>
+          <AntDesign name="loading1" size={24} color="black" />
         </View>
       )}
     </SafeAreaView>

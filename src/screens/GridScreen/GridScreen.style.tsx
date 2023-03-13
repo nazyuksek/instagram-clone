@@ -21,7 +21,6 @@ export const styles = StyleSheet.create({
     backgroundColor: "#FAFAFA",
   },
   postsList: {
-    height: "85%",
     marginTop: verticalScale(16),
   },
   postContainer: {},
@@ -48,5 +47,10 @@ export const styles = StyleSheet.create({
   },
   errorText: {
     fontWeight: "500",
+  },
+  loading: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: "10%",
   },
 });

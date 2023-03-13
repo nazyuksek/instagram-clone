@@ -5,13 +5,13 @@ const screenHeight = Dimensions.get("window").height;
 
 export const styles = StyleSheet.create({
   listContainer: {},
-  postsList: {
-    height: "100%",
-  },
+  postsList: {},
   postContainer: {
     height: screenHeight / 2,
   },
   loading: {
     alignItems: "center",
+    justifyContent: "center",
+    height: "10%",
   },
 });

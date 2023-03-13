@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  Suspense,
+} from "react";
 import {
   Animated,
   FlatList,
@@ -16,6 +22,7 @@ import { verticalScale } from "react-native-size-matters";
 import FeedItem from "../../models/feedObjects";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigationProp } from "../../navigation/AppNavigation";
+import FastImage from "react-native-fast-image";
 
 interface HomeScreenProps {}
 
@@ -28,8 +35,8 @@ function HomeScreen({}: HomeScreenProps) {
   const navigation = useNavigation<AppNavigationProp>();
 
   const fetchData = async () => {
-    const response = await getFeed(page, "People", 10);
     setLoading(true);
+    const response = await getFeed(page, "People", 10);
     if (items !== undefined) {
       setItems([...items, ...response]);
     } else {
@@ -61,9 +68,10 @@ function HomeScreen({}: HomeScreenProps) {
     <SafeAreaView style={styles.listContainer}>
       <Header navigation={navigation} redirectionScreen="GridScreen" />
       <FlatList
-        style={styles.postsList}
+        style={[styles.postsList, { height: !loading ? "100%" : "90%" }]}
         showsHorizontalScrollIndicator={false}
         bounces={false}
+        showsVerticalScrollIndicator={false}
         data={items}
         onViewableItemsChanged={onViewableItemsChanged}
         keyExtractor={(item, index) => index.toString()}
@@ -73,22 +81,24 @@ function HomeScreen({}: HomeScreenProps) {
             useNativeDriver: false,
           }
         )}
-        renderItem={({ item, index }: any) => (
-          <View
-            style={[
-              styles.postContainer,
-              index !== 0 ? { marginTop: verticalScale(24) } : {},
-            ]}
-          >
-            <SinglePost
-              type={item.type}
-              items={item.items}
-              username={item.user}
-              caption={item.description}
-              isLiked={item.liked}
-              shouldPlay={shouldAutoplay.includes(item.id)}
-            />
-          </View>
+        renderItem={({ item, index }) => (
+          <Suspense fallback={<Text>ksldj</Text>}>
+            <View
+              style={[
+                styles.postContainer,
+                index !== 0 ? { marginTop: verticalScale(24) } : {},
+              ]}
+            >
+              <SinglePost
+                type={item.type}
+                items={item.items}
+                username={item.user}
+                caption={item.description[0]}
+                isLiked={item.liked}
+                shouldPlay={shouldAutoplay.includes(item.id)}
+              />
+            </View>
+          </Suspense>
         )}
         onEndReached={handleEndReached}
         onEndReachedThreshold={1}

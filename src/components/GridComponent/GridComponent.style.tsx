@@ -11,6 +11,5 @@ export const styles = StyleSheet.create({
     width: screenWidth / 3,
     borderWidth: 1,
     borderColor: "#fff",
-    resizeMode: "cover",
   },
 });

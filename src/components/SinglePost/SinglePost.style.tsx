@@ -13,7 +13,6 @@ export const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    resizeMode: "cover",
   },
   userInfo: {
     paddingHorizontal: scale(16),

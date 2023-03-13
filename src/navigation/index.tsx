@@ -27,11 +27,12 @@ export default function Navigation() {
   return (
     <NavigationContainer theme={MyTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {isLoggedIn ? (
+        {/* {isLoggedIn ? (
           <Stack.Screen name="Application" component={AppNavigation} />
         ) : (
           <Stack.Screen name="Authentication" component={AuthNavigation} />
-        )}
+        )} */}
+        <Stack.Screen name="Application" component={AppNavigation} />
       </Stack.Navigator>
     </NavigationContainer>
   );
