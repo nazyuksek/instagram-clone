@@ -42,4 +42,11 @@ export const styles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 12,
   },
+  errorContainer: {
+    paddingHorizontal: scale(16),
+    marginTop: verticalScale(16),
+  },
+  errorText: {
+    fontWeight: "500",
+  },
 });

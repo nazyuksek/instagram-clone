@@ -7,7 +7,6 @@ import { styles } from "./GridScreen.style";
 import {
   Animated,
   FlatList,
-  Pressable,
   Text,
   TextInput,
   View,
@@ -15,7 +14,6 @@ import {
 } from "react-native";
 import { getFeed } from "../../services/pexelService";
 import FeedItem from "../../models/feedObjects";
-import { verticalScale } from "react-native-size-matters";
 import GridComponent from "../../components/GridComponent/GridComponent";
 import { Feather } from "@expo/vector-icons";
 
@@ -29,7 +27,7 @@ function GridScreen({}: GridScreenProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [shouldAutoplay, setShouldAutoplay] = useState<number[]>([]);
-  const [error, setError] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const onViewableItemsChanged = useCallback(
     (info: { viewableItems: ViewToken[]; changed: ViewToken[] }): void => {
@@ -50,7 +48,9 @@ function GridScreen({}: GridScreenProps) {
         }
         setLoading(false);
       })
-      .catch((error) => setError(true));
+      .catch((error) => {
+        setError(error.toString());
+      });
   };
 
   useEffect(() => {
@@ -70,7 +70,7 @@ function GridScreen({}: GridScreenProps) {
         setItems(res);
       })
       .catch((error) => {
-        setError(true);
+        setError(error.toString());
       });
     setLoading(false);
   };
@@ -92,38 +92,39 @@ function GridScreen({}: GridScreenProps) {
           </View>
         </View>
       </View>
-      <FlatList
-        style={styles.postsList}
-        showsHorizontalScrollIndicator={false}
-        bounces={false}
-        data={items}
-        numColumns={3}
-        key={0}
-        onViewableItemsChanged={onViewableItemsChanged}
-        keyExtractor={(item, index) => index.toString()}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          {
-            useNativeDriver: false,
-          }
-        )}
-        renderItem={({ item }: any) => (
-          <View style={styles.postContainer}>
-            <GridComponent
-              type={item.type}
-              items={item.items}
-              shouldPlay={shouldAutoplay.includes(item.id)}
-            />
-          </View>
-        )}
-        onEndReached={handleEndReached}
-        onEndReachedThreshold={1}
-      />
-      {/* {error && (
-        <View style={{ marginTop: 60, backgroundColor: "red", height: 300 }}>
-          <Text>No results found</Text>
+      {items?.length !== 0 ? (
+        <FlatList
+          style={styles.postsList}
+          showsHorizontalScrollIndicator={false}
+          bounces={false}
+          data={items}
+          numColumns={3}
+          key={0}
+          onViewableItemsChanged={onViewableItemsChanged}
+          keyExtractor={(item, index) => index.toString()}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            {
+              useNativeDriver: false,
+            }
+          )}
+          renderItem={({ item }: any) => (
+            <View style={styles.postContainer}>
+              <GridComponent
+                type={item.type}
+                items={item.items}
+                shouldPlay={shouldAutoplay.includes(item.id)}
+              />
+            </View>
+          )}
+          onEndReached={handleEndReached}
+          onEndReachedThreshold={1}
+        />
+      ) : (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>No results found</Text>
         </View>
-      )} */}
+      )}
     </SafeAreaView>
   );
 }
