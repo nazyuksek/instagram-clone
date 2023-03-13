@@ -1,4 +1,4 @@
-export default interface AuthMModel {
+export default interface AuthModel {
     email: string;
     password: string;
     

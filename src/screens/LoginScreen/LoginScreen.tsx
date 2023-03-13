@@ -7,6 +7,8 @@ import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useAuthentication from "../../hooks/useAuthentication";
+import * as SecureStore from "expo-secure-store";
+import AuthModel from "../../models/authModel";
 
 interface LoginScreenProps {}
 
@@ -14,7 +16,12 @@ function LoginScreen({}: LoginScreenProps) {
   const [securePassword, setSecurePassword] = useState<boolean>(true);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { isLoggedIn, setIsLoggedIn } = useAuthentication();
+  const { setIsLoggedIn } = useAuthentication();
+
+  async function save(user: AuthModel) {
+    await SecureStore.setItemAsync("email", user.email);
+    await SecureStore.setItemAsync("password", user.password);
+  }
 
   const registerSchema = yup.object().shape({
     email: yup
@@ -32,11 +39,12 @@ function LoginScreen({}: LoginScreenProps) {
     resolver: yupResolver(registerSchema),
   });
 
-  function onSubmit(data: any) {
+  async function onSubmit(data: any) {
     if (!errors.email && !errors.password) {
       setIsLoggedIn(true);
       setEmail(data.email);
       setPassword(data.password);
+      await save({ email, password });
     }
   }
 
