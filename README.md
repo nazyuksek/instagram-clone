@@ -6,7 +6,7 @@ This project is an instagram-resembling mobile application implemented using Rea
 
 ```yarn start```
 
-A bit of advice: Download expo app in your physical device and scan the qr code for better performance.
+A bit of advice: Download expo app in your physical device and scan the QR code for better performance.
 
 # Notes about the project
 
