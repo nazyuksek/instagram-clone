@@ -12,7 +12,7 @@ import {
   View,
   ViewToken,
 } from "react-native";
-import { getFeed } from "../../services/pexelService";
+import { getFeed } from "../../services/pexel";
 import FeedItem from "../../models/feedObjects";
 import GridComponent from "../../components/GridComponent/GridComponent";
 import { Feather } from "@expo/vector-icons";

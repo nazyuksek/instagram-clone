@@ -10,7 +10,7 @@ import {
 import SinglePost from "../../components/SinglePost/SinglePost";
 import { styles } from "./HomeScreen.style";
 import { AntDesign } from "@expo/vector-icons";
-import { getFeed } from "../../services/pexelService";
+import { getFeed } from "../../services/pexel";
 import Header from "../../components/Header/Header";
 import { verticalScale } from "react-native-size-matters";
 import FeedItem from "../../models/feedObjects";

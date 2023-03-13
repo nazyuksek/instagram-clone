@@ -12,16 +12,7 @@ const client = createClient(
   "qOje6Xh0aICA96FPeH1qRqPnMuDHhp3cPrIgRYoZ66HEETYFC5hCQHRS"
 );
 
-// const query = "People";
 const feedItems = 8;
-
-// export async function getPhotos(): Promise<PhotosWithTotalResults> {
-//   return client.photos.search({
-//     query,
-//     page: 1,
-//     per_page: 35,
-//   }) as unknown as PhotosWithTotalResults;
-// }
 
 export async function getFeed(
   page: number,
